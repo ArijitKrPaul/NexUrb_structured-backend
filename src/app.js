@@ -1,0 +1,20 @@
+import cors from "cors";
+import express from "express";
+
+const app = express();
+
+app.use(express.json());
+app.use(cors());
+app.use(express.urlencoded({ extended: true, limit: "16kb" }));
+app.use(express.static("public"));
+
+//routes
+import deptRouter from "../src/routers/dept.routers.js";
+import userRouter from "../src/routers/user.routers.js";
+import empRouter from "../src/routers/employees.router.js";
+
+app.use("/api/v1/users", userRouter);
+app.use("/api/v1/dept", deptRouter);
+app.use("/api/v1/emp", empRouter);
+
+export default app;
