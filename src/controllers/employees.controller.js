@@ -88,4 +88,27 @@ const itemDelete = asyncHandler(async (req, res) => {
     .status(200)
     .json(new ApiResponse(200, {}, "Item deleted Successfully"));
 });
-export { itemAdd, itemDelete, projectAdd };
+
+const itemUpdate = asyncHandler(async (req, res) => {
+  //get item id
+  //updated quantity
+  //check the id exists or not
+  //update the database
+
+  const { quantity, product_id, dept_id } = req.body;
+
+  const q =
+    await sql`SELECT * from products where product_id=${product_id} and dept_id=${dept_id}`;
+
+  if (q.length === 0) {
+    throw new ApiError(400, "Item doesnt exist");
+  }
+
+  await sql`UPDATE products SET quantity=${quantity} WHERE product_id=${product_id} and dept_id=${dept_id}`;
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, {}, "Item updated successfully"));
+});
+
+export { itemAdd, itemDelete, itemUpdate, projectAdd };
