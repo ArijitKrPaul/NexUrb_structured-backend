@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
   complaintForm,
   deptRegister,
+  getComplaints,
   loginUser,
   userRegister,
 } from "../controllers/user.controller.js";
@@ -18,5 +19,7 @@ router.route("/login").post(loginUser);
 router.route("/deptRegister").post(handlePdfUpload, deptRegister);
 
 router.route("/complaint").post(handleImageUpload, complaintForm);
+
+router.route("/getComplaints").get(getComplaints);
 
 export default router;

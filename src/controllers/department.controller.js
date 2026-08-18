@@ -66,6 +66,7 @@ const deptProject = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, q, "Department projects fetched successfully"));
 });
 
+//dept inventory items
 const inventoryItems = asyncHandler(async (req, res) => {
   const dept_id = req.query.dept_id;
 
@@ -84,5 +85,7 @@ const inventoryItems = asyncHandler(async (req, res) => {
     .status(200)
     .json(new ApiResponse(200, q, "items fetched successfully"));
 });
+
+const getAllComplaints = asyncHandler(async (req, res) => {});
 
 export { deptProject, inventoryItems, projectGet };

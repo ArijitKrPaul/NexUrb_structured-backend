@@ -131,4 +131,19 @@ const complaintForm = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, {}, "Complaint submitted successfully"));
 });
 
-export { complaintForm, deptRegister, loginUser, userRegister };
+const getComplaints = asyncHandler(async (req, res) => {
+  const { id } = req.query;
+
+  const q = await sql`SELECT * from COMPLAINTS where user_id=${req.query.id}`;
+
+  if (q.length === 0) {
+    return res.status(200).json(new ApiResponse(200, {}, "No complaints yet"));
+  }
+
+  console.log(q);
+  return res
+    .status(200)
+    .json(new ApiResponse(200, q, "Complaints fetched successfully"));
+});
+
+export { complaintForm, deptRegister, getComplaints, loginUser, userRegister };

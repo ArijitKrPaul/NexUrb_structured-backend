@@ -111,4 +111,49 @@ const itemUpdate = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, {}, "Item updated successfully"));
 });
 
-export { itemAdd, itemDelete, itemUpdate, projectAdd };
+const updateProject = asyncHandler(async (req, res) => {
+  const { name, type, state, city, description } = req.body;
+  const { id } = req.params;
+
+  const q = await sql`SELECT * FROM project where project_id=${id}`;
+
+  if (q.length === 0) {
+    return new ApiError(400, "Project does not exist");
+  }
+
+  await sql`UPDATE project SET 
+  "Name"=${name},
+  type=${type},
+  state=${state},
+  city=${city},
+  description=${description}
+  WHERE project_id=${id}`;
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, {}, "project updated successfully"));
+});
+
+const updateProjectStatus = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const { status } = req.body;
+
+  if (!["ongoing", "completed"].includes(status)) {
+    throw new ApiError(400, "Invalid Status Request");
+  }
+
+  await sql`UPDATE project SET status = ${status} WHERE project_id = ${req.params.id}`;
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, {}, "Status updated Successfully"));
+});
+
+export {
+  itemAdd,
+  itemDelete,
+  itemUpdate,
+  projectAdd,
+  updateProject,
+  updateProjectStatus,
+};
