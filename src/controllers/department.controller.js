@@ -86,6 +86,40 @@ const inventoryItems = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, q, "items fetched successfully"));
 });
 
-const getAllComplaints = asyncHandler(async (req, res) => {});
+const getAllComplaints = asyncHandler(async (req, res) => {
+  let complaints;
+  const { state, city, status } = req.query;
 
-export { deptProject, inventoryItems, projectGet };
+  if (state && city) {
+    complaints = await sql`
+        SELECT * FROM complaints
+        WHERE state ILIKE ${"%" + state + "%"}
+        AND city ILIKE ${"%" + city + "%"}
+        ORDER BY c_id DESC
+      `;
+  } else if (state) {
+    complaints = await sql`
+        SELECT * FROM complaints
+        WHERE state ILIKE ${"%" + state + "%"}
+        ORDER BY c_id DESC
+      `;
+  } else if (city) {
+    complaints = await sql`
+        SELECT * FROM complaints
+        WHERE city ILIKE ${"%" + city + "%"}
+        ORDER BY c_id DESC
+      `;
+  } else {
+    complaints = await sql`SELECT * FROM complaints ORDER BY c_id DESC`;
+  }
+
+  if (status) {
+    complaints = complaints.filter((c) => c.status === status);
+  }
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, complaints, "Complaints fetched Successfully"));
+});
+
+export { deptProject, getAllComplaints, inventoryItems, projectGet };
