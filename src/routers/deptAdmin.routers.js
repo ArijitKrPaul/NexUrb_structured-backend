@@ -1,6 +1,7 @@
 import { Router } from "express";
 import {
   addDeptContact,
+  addUser,
   deleteUser,
   getContactDetails,
   getDepartmentEmp,
@@ -21,5 +22,7 @@ router.route("/delUser").put(deleteUser);
 router.route("/getDepartmentUser").get(getDepartmentEmp);
 
 router.route("/getNewUser").get(getUserToAdd);
+
+router.route("/addUser").put(addUser);
 
 export default router;

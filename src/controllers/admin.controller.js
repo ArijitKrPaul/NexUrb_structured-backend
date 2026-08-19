@@ -123,8 +123,23 @@ const getUserToAdd = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, result, "Users fetched successfully"));
 });
 
+const addUser = asyncHandler(async (req, res) => {
+  const { dept_id, role, user_id } = req.body;
+
+  if (!dept_id || !role || !user_id) {
+    throw new ApiError(400, "All fields are required");
+  }
+
+  await sql`UPDATE USERS SET role=${role},dept_id=${dept_id} where user_id=${user_id}`;
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, {}, "User Added successfully"));
+});
+
 export {
   addDeptContact,
+  addUser,
   deleteUser,
   getContactDetails,
   getDepartmentEmp,
