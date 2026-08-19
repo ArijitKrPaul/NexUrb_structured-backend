@@ -72,4 +72,63 @@ const updateContactDetails = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, {}, "Contact Updated Successfully"));
 });
 
-export { addDeptContact, getContactDetails, updateContactDetails };
+const deleteUser = asyncHandler(async (req, res) => {
+  const { user_id } = req.body;
+
+  await sql`UPDATE USERS SET role='USER',dept_id=NULL where user_id=${user_id}`;
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(200, {}, "User removed from department successfully"),
+    );
+});
+
+const updateUserRole = asyncHandler(async (req, res) => {
+  const { role, user_id } = req.body;
+
+  await sql`UPDATE USERS SET role=${role} where user_id=${user_id}`;
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, {}, "Role updated Successfully"));
+});
+
+const getDepartmentEmp = asyncHandler(async (req, res) => {
+  const { dept_id } = req.query;
+
+  const result = await sql`SELECT user_id,name,email,role from Users 
+  where dept_id=${dept_id} 
+  AND role in ('Project Manager','Inventory Manager','Employee','Support')`;
+
+  if (result.length === 0) {
+    throw new ApiError(409, "No users");
+  }
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, result, "Users fetched Successfully"));
+});
+
+const getUserToAdd = asyncHandler(async (req, res) => {
+  const result =
+    await sql`SELECT user_id,name,email from USERS where role in ('USER','user')`;
+
+  if (result.length === 0) {
+    throw new ApiError(400, "Cannot fetch users");
+  }
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, result, "Users fetched successfully"));
+});
+
+export {
+  addDeptContact,
+  deleteUser,
+  getContactDetails,
+  getDepartmentEmp,
+  getUserToAdd,
+  updateContactDetails,
+  updateUserRole,
+};
