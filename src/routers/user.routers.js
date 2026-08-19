@@ -3,6 +3,7 @@ import {
   complaintForm,
   deptRegister,
   getComplaints,
+  getDepartmentContactDetails,
   loginUser,
   userRegister,
 } from "../controllers/user.controller.js";
@@ -21,5 +22,7 @@ router.route("/deptRegister").post(handlePdfUpload, deptRegister);
 router.route("/complaint").post(handleImageUpload, complaintForm);
 
 router.route("/getComplaints").get(getComplaints);
+
+router.route("/getContact").get(getDepartmentContactDetails);
 
 export default router;

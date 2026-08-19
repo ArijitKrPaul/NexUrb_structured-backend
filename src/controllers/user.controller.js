@@ -146,4 +146,32 @@ const getComplaints = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, q, "Complaints fetched successfully"));
 });
 
-export { complaintForm, deptRegister, getComplaints, loginUser, userRegister };
+const getDepartmentContactDetails = asyncHandler(async (req, res) => {
+  const { name, state, city } = req.query;
+
+  const stateQuery = `%${state || ""}%`;
+  const cityQuery = `%${city || ""}%`;
+  const nameQuery = `%${name || ""}%`;
+
+  const result = await sql`SELECT * from contact 
+    where name ILIKE ${nameQuery} 
+    AND state ILIKE ${stateQuery} 
+    AND city ILIKE ${cityQuery}`;
+
+  if (result.length === 0) {
+    throw new ApiError(400, "No contacts to be shown");
+  }
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, result, "Contacts fetched Successfully"));
+});
+
+export {
+  complaintForm,
+  deptRegister,
+  getComplaints,
+  getDepartmentContactDetails,
+  loginUser,
+  userRegister,
+};

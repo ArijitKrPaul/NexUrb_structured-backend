@@ -45,4 +45,31 @@ const getContactDetails = asyncHandler(async (req, res) => {
   return res.status(200).json(new ApiResponse(200, q, "Fetched successfully"));
 });
 
-export { addDeptContact, getContactDetails };
+const updateContactDetails = asyncHandler(async (req, res) => {
+  const { name, state, city, email, number, location, id } = req.body;
+
+  if (!name || !state || !city || !email || !number || !location || !id) {
+    throw new ApiError(400, "All fields are required");
+  }
+
+  const q = await sql`SELECT * from departments where dept_id=${id}`;
+
+  if (q.length === 0) {
+    throw new ApiError(400, "Department does not exist");
+  }
+
+  await sql`UPDATE contact
+      SET name = ${name},
+          state = ${state},
+          city = ${city},
+          phone_number = ${number},
+          email = ${email},
+          location=${location}
+      WHERE dept_id = ${id} `;
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, {}, "Contact Updated Successfully"));
+});
+
+export { addDeptContact, getContactDetails, updateContactDetails };
